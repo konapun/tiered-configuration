@@ -1,12 +1,14 @@
 <?php
 namespace configuration\util;
 
+use configuration\util\TreeWalker as TreeWalker;
+
 /*
- * A cache with n levels, where levels closer to 0 have a higher priority
+ * A tree cache with n levels, where levels closer to 0 have a higher priority
  *
  * Author: Bremen Braun
  */
-class MultilevelCache {
+class MultilevelTreeCache {
 	private $caches = array();
 	
 	/*
@@ -14,7 +16,7 @@ class MultilevelCache {
 	 */
 	function __construct($nCaches) {
 		for ($i = 0; $i < $nCaches; $i++) {
-			array_push($this->caches, array());
+			array_push($this->caches, null);
 		}
 	}
 	
@@ -22,24 +24,30 @@ class MultilevelCache {
 	 * Cache an item at a specific cache index (indexes closer to 0 have a
 	 * higher priority)
 	 */
-	function cache($key, $value, $level) {
+	function cache($tree, $level) {
 		$this->checkBounds($level);
-		$this->caches[$level][$key] = $value;
+		$this->caches[$level] = $tree;
 	}
 	
 	/*
 	 * Return whether or not a key exists in the multilevel cache
 	 */
 	function hasKey($key, $level=null) {
-		return $this->traverseCache(function($caches) use($key) {
-			foreach ($caches as $cache) {
-				if (array_key_exists($key, $cache)) {
-					return true;
-				}
-			}
-			
+		try {
+			$this->getValue($key, $level);
+		}
+		catch (Exception $e) {
 			return false;
-		}, $level);
+		}
+		
+		return true;
+	}
+	
+	/*
+	 * Return the number of levels in this cache
+	 */
+	function getCacheLevels() {
+		return count($this->caches);
 	}
 	
 	/*
@@ -47,21 +55,30 @@ class MultilevelCache {
 	 * 0 and moving up, or only at a specific level
 	 */
 	function getValue($key, $level=null) {
-		return $this->traverseCache(function($caches) use ($key) {
+		return $this->traverseCache(function($caches) use ($key, $level) {
+			$value = null;
 			foreach ($caches as $cache) {
-				if (array_key_exists($key, $cache)) {
-					return $cache[$key];
+				$walker = new TreeWalker($cache);
+				
+				$walker->walk(TreeWalker::TRAVERSE_BF, function($node) use ($key, &$value) {
+					if (!$node->isLeaf() && $node->getData() === $key) { // leaf nodes ARE the values so exclude them
+						$value = $node;
+						return true;
+					}
+				});
+			}
+			
+			if ($value === null) { // key not found
+				$error = "";
+				if ($level === null) {
+					$error = "No such key '$key' in multilevel cache";
 				}
+				else {
+					$error = "No such key '$key' at cache level $level";
+				}
+				throw new \RuntimeException($error);
 			}
-		
-			$error = "";
-			if ($level === null) {
-				$error = "No such key '$key' in multilevel cache";
-			}
-			else {
-				$error = "No such key '$key' at cache level $level";
-			}
-			throw new \RuntimeException($error);
+			return $value;
 		}, $level);
 	}
 	

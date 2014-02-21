@@ -8,8 +8,9 @@ namespace configuration\adapter;
  */
 interface IAdapter {
 
-	/* Reads the file (probably passed in through a constructor) and decomposes
-	 * it as an array structure
+	/* Reads the file (probably passed in through a constructor) and reformats
+	 * it into a tree structure, where each node in the tree is a
+	 * ConfigurationNode
 	 */
 	function buildConfigurationTree();
 }

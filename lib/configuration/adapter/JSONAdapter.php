@@ -2,6 +2,7 @@
 namespace configuration\adapter;
 
 use configuration\adapter\IAdapter as IAdapter;
+use configuration\tree\TreeBuilder as TreeBuilder;
 use configuration\exception\FileNotFoundException as FileNotFoundException;
 use configuration\exception\FormatException as FormatException;
 
@@ -29,7 +30,8 @@ class JSONAdapter implements IAdapter {
 		if ($tree === null) {
 			throw new FormatException("Can't parse file - not a JSON file");
 		}
-		return $tree;
+		$treeBuilder = new TreeBuilder();
+		return $treeBuilder->buildTree($tree);
 	}
 }
 ?>

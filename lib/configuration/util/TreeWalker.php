@@ -1,16 +1,6 @@
 <?php
 namespace configuration\util;
 
-class TreeNode {
-	public $key;
-	public $value;
-	
-	function __construct($key, $value) {
-		$this->key = $key;
-		$this->value = $value;
-	}
-}
-
 /*
  * Traverse a tree using a variety of algorithms, allowing a callback to be
  * executed at each node in the traversal
@@ -21,10 +11,10 @@ class TreeWalker {
 	private $tree;
 	
 	// Walker types
-	const BF = 0;
-	/*const DF_PREORDER = 1;
-	const DF_INORDER = 2;
-	const DF_POSTORDER = 3;
+	const TRAVERSE_BF = 0;
+	/*const TRAVERSE_DF_PREORDER = 1;
+	const TRAVERSE_DF_INORDER = 2;
+	const TRAVERSE_DF_POSTORDER = 3;
 	*/
 	
 	function __construct($tree) {
@@ -37,7 +27,7 @@ class TreeWalker {
 	 */
 	function walk($algorithm, $callback) {
 		switch ($algorithm) {
-			case self::BF:
+			case self::TRAVERSE_BF:
 				$this->walkRecBF($this->tree, $callback);
 				break;
 			default:
@@ -47,18 +37,13 @@ class TreeWalker {
 	
 	/*
 	 * Breadth-first traversal
-	 *
-	 * FIXME: Handling of key for nested array
 	 */
 	private function walkRecBF($tree, $callback) {
-		foreach (array_keys($tree) as $key) {
-			$val = $tree[$key];
-			if (is_array($val)) {
-				$this->walkRecBF($val, $callback);
-			}
-			else {
-				$callback(new TreeNode($key, $val));
-			}
+		if ($callback($tree) === true) { // break traversal early if callback returns true
+			return;
+		}
+		foreach ($tree->getChildren() as $child) {
+			$this->walkRecBF($child, $callback);
 		}
 	}
 }
