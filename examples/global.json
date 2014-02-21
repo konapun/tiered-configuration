@@ -1,0 +1,6 @@
+{
+  "project": {
+    "root": "./lib",
+    "name": "Tiered Configuration"
+  }
+}

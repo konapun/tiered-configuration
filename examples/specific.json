@@ -1,0 +1,8 @@
+{
+  "environment": {
+    "name": "my environment"
+  },
+  "project": {
+    "name": "Overridden name!"
+  }
+}
