@@ -31,16 +31,17 @@ class TieredConfiguration implements ConfigurationReader {
 	 */
 	function getSection($key) {
 		$node = $this->cache->getValue($key);
-		// TODO
-		
-		return $node;
+		$cache = new MultilevelTreeCache(1);
+		$cache->cache($node, 0);
+		$nodeAPI = $this->cloneWithCache($cache);
+		return $nodeAPI;
 	}
 	
 	/*
 	 * A value for a key may be a section or a variable
 	 */
 	function getValue($key) {
-		$section = $this->getSection($key);
+		$section = $this->cache->getValue($key);
 		if (count($section->getChildren()) == 1) {
 			return $section->getChild(0)->getData();
 		}
