@@ -3,7 +3,6 @@ namespace configuration;
 
 use configuration\ConfigurationReader as ConfigurationReader;
 use configuration\util\MultilevelTreeCache as MultilevelTreeCache;
-use configuration\util\TreeWalker as TreeWalker;
 
 /*
  * Cascading configuration format
