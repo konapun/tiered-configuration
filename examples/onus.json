@@ -1,0 +1,43 @@
+{
+    "environment": {
+        "name": {
+            "type": "string"
+        }
+    },
+    "project": {
+        "root": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "debug": {
+            "type": "boolean",
+            "required": false,
+            "comments": "A boolean (true/false) type. Since it's optional it won't be required in the final configuration being checked against this onus file"
+        },
+        "zeroOrOne": {
+            "type": {
+                "limit": [
+                    0,
+                    1,
+                    "null"
+                ]
+            },
+            "comments": "This shows an example of limiting input to values described which are, in this case, 0, 1, or the string value 'null'"
+        },
+        "oneToTen": {
+            "type": {
+                "range": [
+                    0,
+                    10
+                ]
+            },
+            "comments": "This shows an example of using the range type"
+        }
+    },
+    "optional": {
+        "required": false,
+        "comments": "An optional thing"
+    }
+}

@@ -10,9 +10,9 @@ use configuration\tree\ConfigurationNode as Node;
  * Author: Bremen Braun
  */
 class TreeBuilder {
-	
+
 	function __construct() {}
-	
+
 	/*
 	 * Build a tree and return the root node
 	 */
@@ -21,9 +21,10 @@ class TreeBuilder {
 		while (!$tree->isRoot()) {
 			$tree = $tree->getParent();
 		}
+    
 		return $tree;
 	}
-	
+
 	/*
 	 * Convert a tree in an array structure to an actual tree structure
 	 * providing convenient tree operations
@@ -32,7 +33,7 @@ class TreeBuilder {
 		foreach (array_keys($arrayTree) as $key) {
 			$sectionNode = new Node($key);
 			$node->addChild($sectionNode);
-			
+
 			$nodeVal = $arrayTree[$key];
 			if (is_array($nodeVal)) {
 				$this->buildTreeRec($sectionNode, $nodeVal);

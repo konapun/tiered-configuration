@@ -11,7 +11,7 @@ class ConfigurationNode {
 	private $data;
 	private $parent;
 	private $children;
-	
+
 	/*
 	 * Construct a root node
 	 */
@@ -20,7 +20,7 @@ class ConfigurationNode {
 		$this->parent = null;
 		$this->children = $children;
 	}
-	
+
 	/*
 	 * Add a child node to this tree, altering the hierarchy so that this node
 	 * is the parent of the node being added
@@ -29,47 +29,68 @@ class ConfigurationNode {
 		$configurationNode->parent = $this;
 		array_push($this->children, $configurationNode);
 	}
-	
+
 	/*
 	 * Return the data held at this node
 	 */
 	function getData() {
 		return $this->data;
 	}
-	
+
 	/*
 	 * Return the node which is the direct parent of this node
 	 */
 	function getParent() {
 		return $this->parent;
 	}
-	
+
 	function getChild($index) {
 		if ($index < 0 || $index > count($this->children)-1) {
 			throw new \OutOfBoundsException("Child index out of bounds ($index)");
 		}
 		return $this->children[$index];
 	}
-	
+
 	/*
 	 * Return child trees for this node
 	 */
 	function getChildren() {
 		return $this->children;
 	}
-	
+
 	/*
 	 * Return whether or not this node is a root node
 	 */
 	function isRoot() {
 		return $this->parent === null;
 	}
-	
+
 	/*
 	 * Return whether or not this node is a leaf node
 	 */
 	function isLeaf() {
 		return count($this->children) === 0;
 	}
+
+  function getReverseDepth() {
+    $maxDepth = 0;
+    $localDepth = 0;
+    foreach ($this->children as $child) {
+      $localDepth = $child->getReverseDepthRecurse(1);
+      if ($localDepth > $maxDepth) {
+        $maxDepth = $localDepth;
+      }
+    }
+
+    return $maxDepth;
+  }
+
+  private function getReverseDepthRecurse($depth) {
+    $max = $depth;
+    foreach ($this->children as $child) {
+      return $child->getReverseDepthRecurse($depth+1);
+    }
+    return $max;;
+  }
 }
 ?>
