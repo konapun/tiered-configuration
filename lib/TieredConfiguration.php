@@ -11,6 +11,7 @@ include_once($basename . 'tree' . DIRECTORY_SEPARATOR . 'ConfigurationNode.php')
 include_once($basename . 'tree' . DIRECTORY_SEPARATOR . 'TreeBuilder.php');
 include_once($basename . 'util' . DIRECTORY_SEPARATOR . 'MultilevelTreeCache.php');
 include_once($basename . 'util' . DIRECTORY_SEPARATOR . 'TreeWalker.php');
-//include_once($basename . 'validator' . DIRECTORY_SEPARATOR . 'parser' . DIRECTORY_SEPARATOR . 'OnusParser.php');
-//include_once($basename . 'validator' . DIRECTORY_SEPARATOR . 'Validator.php');
+include_once($basename . 'validator' . DIRECTORY_SEPARATOR . 'type' . DIRECTORY_SEPARATOR . 'TypeFactory.php');
+include_once($basename . 'validator' . DIRECTORY_SEPARATOR . 'parser' . DIRECTORY_SEPARATOR . 'OnusParser.php');
+include_once($basename . 'validator' . DIRECTORY_SEPARATOR . 'Validator.php');
 ?>

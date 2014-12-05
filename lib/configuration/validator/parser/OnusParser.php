@@ -1,19 +1,25 @@
 <?php
 namespace configuration\validator\parser;
 
+use configuration\validator\type\TypeFactory as TypeFactory;
 use configuration\util\TreeWalker as TreeWalker;
 
 /*
- *
+ * Load an onus file
  */
 class OnusParser {
+  private $factory;
 
+  function __construct() {
+    $this->factory = new TypeFactory();
+  }
+  
   function parse($tree) {
     $walker = new TreeWalker($tree);
 
     $walker->walk(TreeWalker::TRAVERSE_BF, function($node) {
       $reverseDepth = $node->getReverseDepth();
-      if ($reverseDepth
+
       switch ($reverseDepth) {
         case 0:
           echo "Case 0 with " . $node->getData() . "\n";

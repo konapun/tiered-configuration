@@ -16,7 +16,7 @@
             "required": false,
             "comments": "A boolean (true/false) type. Since it's optional it won't be required in the final configuration being checked against this onus file"
         },
-        "zeroOrOne": {
+        "test-limited": {
             "type": {
                 "limit": [
                     0,
@@ -26,7 +26,7 @@
             },
             "comments": "This shows an example of limiting input to values described which are, in this case, 0, 1, or the string value 'null'"
         },
-        "oneToTen": {
+        "test-ranged": {
             "type": {
                 "range": [
                     0,
@@ -36,7 +36,8 @@
             "comments": "This shows an example of using the range type"
         }
     },
-    "optional": {
+    "test-optional": {
+        "type": "string",
         "required": false,
         "comments": "An optional thing"
     }
