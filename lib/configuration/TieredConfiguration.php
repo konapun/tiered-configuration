@@ -78,6 +78,11 @@ class TieredConfiguration implements ConfigurationReader {
 
 		return $vars;
 	}
+
+  function flatten() {
+    return $this->cache->flatten();
+  }
+
 	/*
 	 * In order to traverse the configuration hierarchy while still maintaining
 	 * this API, clones will be returned for partial results

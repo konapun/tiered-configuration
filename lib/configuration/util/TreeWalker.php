@@ -9,36 +9,39 @@ namespace configuration\util;
  */
 class TreeWalker {
 	private $tree;
-	
+
 	// Walker types
 	const TRAVERSE_BF = 0;
 	/*const TRAVERSE_DF_PREORDER = 1;
 	const TRAVERSE_DF_INORDER = 2;
 	const TRAVERSE_DF_POSTORDER = 3;
 	*/
-	
+
 	function __construct($tree) {
 		$this->tree = $tree;
 	}
-	
+
 	/*
 	 * Execute a traversal of type $algorithm, where $algorithm is a value from
 	 * the enum above, calling $callback on each node in the order encountered
 	 */
-	function walk($algorithm, $callback) {
+	function walk($algorithm, $callback, $depthResetCallback=false) {
+    if (!$depthResetCallback) $depthResetCallback = function(){}; // nop
 		switch ($algorithm) {
 			case self::TRAVERSE_BF:
-				$this->walkRecBF($this->tree, $callback);
+				$this->walkRecBF($this->tree, $callback, $depthResetCallback);
 				break;
 			default:
 				throw new \InvalidArgumentException("No algorithm for walk type");
 		}
 	}
-	
+
 	/*
 	 * Breadth-first traversal
 	 */
-	private function walkRecBF($tree, $callback) {
+	private function walkRecBF($tree, $callback, $depthResetCallback=false) {
+    if (!$depthResetCallback) $depthResetCallback = function(){}; // nop
+    $depthResetCallback();
 		if ($callback($tree) === true) { // break traversal early if callback returns true
 			return;
 		}
