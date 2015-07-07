@@ -5,7 +5,7 @@ Often, you will have multiple configurations for multiple environments but most 
 it would be better to allow configurations to cascade, allowing like options to be defined in one place and optionally be overridden by more specific configurations. That's what this does.
 
 ## Configuration Formats
-Any file type can be used for configuration, as long as it has an adapter. Currently, the only available adapter is for **json**, but creating adapters is simple -- just create a class that implements
+Any file type can be used for configuration, as long as it has an adapter. Currently, the only available adapters are for **json** and **flatfiles** (files where each line specifies a key=value pair and comments are given by lines starting with #), but creating adapters is simple -- just create a class that implements
 `configuration\adapter\IAdapter` and write the implementation for `buildConfigurationTree`. You can also cascade configuration files of multiple formats.
 
 ### Example
@@ -43,7 +43,25 @@ $root = $config->getValue('root'); // "./lib" - from global.json
 $projectName = $config->getValue('name'); // "Overridden name!" - from specific.json
 ```
 
-You can cascade any number of configuration files you want
+You can get the configuration as a PHP array where each value is the appropriate cascaded value using `TieredConfiguration::flatten`:
+```php
+//Continuing example above
+$flattened = $config->flatten();
+/*
+$flattened value =>
+
+array(
+  'project' => array(
+    'root' => "./lib",
+    'name' => "Overridden name!"
+  ),
+  'environment' => array(
+    'name' => "my environment"
+  )
+)
+*/
+```
+You can cascade any number of configuration files you want.
 
 ### Pending Tasks
   * **Scoping:** Configuration should support "sections", like "environment" and "project" above, to which config variables are scoped
