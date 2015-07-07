@@ -13,15 +13,15 @@ use configuration\exception\FormatException as FormatException;
  */
 class JSONAdapter implements IAdapter {
 	private $fileContents;
-	
+
 	function __construct($jsonFile) {
 		$contents = file_get_contents($jsonFile);
 		if ($contents === false) {
 			throw new FileNotFoundException("Can't locate file '$jsonFile'");
 		}
-		$this->fileContents = file_get_contents($jsonFile);
+		$this->fileContents = $contents;
 	}
-	
+
 	/*
 	 * Return the contents of the JSON file as a configuration tree
 	 */

@@ -1,0 +1,7 @@
+# Flatfile test
+val3=Value three
+val4=Value four
+
+# Stuff to be overridden
+override1=OVERRIDDEN 1
+override2=OVERRIDDEN 2

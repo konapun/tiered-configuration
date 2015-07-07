@@ -88,42 +88,56 @@ class MultilevelTreeCache {
 	 * available. Merged result is a 1D array.
 	 */
 	function flatten() {
-		$merged = array();
+		$flattenedLevels = array();
 		$len = count($this->caches);
-		for ($i = $len-1; $i > -1; $i--) { // traverse backwards so values can be replaced by those of higher priority
-			$cache = $this->caches[$i]; // a configuration\tree\ConfigurationNode
-      $walker = new TreeWalker($cache);
-
-      echo "====\n";
-      $scope = array($merged); // root scoping
-      $walker->walk(TreeWalker::TRAVERSE_BF, function($node) use (&$scope) {
-        $data = $node->getData();
-        $depth = $node->getReverseDepth();
-
-        if ($node->isLeaf()) {
-          $key = $node->getParent()->getData();
-          end($scope)[$key] = $data;
-          echo "Adding ($key, $data) to scope\n";
-        }
-        else if ($depth >= 2){
-          if ($data) {
-            echo "!!!!Section value: $data\n";
-            array_push(end($scope), array(
-              $data => array()
-            ));
-
-            var_dump($scope);
-          }
-        }
-      }, function() use (&$scope){
-        //array_pop($scope);
-      });
-      echo "---------------\n";
+    foreach ($this->caches as $cache) {
+      array_push($flattenedLevels, $this->flattenLevel($cache));
 		}
 
-    var_dump($merged);
-		return $merged;
+    $flattened = array();
+    foreach ($flattenedLevels as $level) {
+      foreach ($level as $key => $val) {
+        $flattened[$key] = $val;
+      }
+    }
+
+		return $flattened;
 	}
+
+  private function flattenLevel($cache) {
+    $walker = new TreeWalker($cache);
+
+    $scope = array(array());
+    $walker->walk(TreeWalker::TRAVERSE_BF, function($node) use (&$scope) {
+      $data = $node->getData();
+      $depth = $node->getReverseDepth();
+
+      if ($node->isLeaf()) { // get parent as key
+        $key = $node->getParent()->getData();
+        $scopeLevel = array_pop($scope);
+
+        $scopeLevel[$key] = $data;
+        array_push($scope, $scopeLevel);
+      }
+      else if ($depth >= 2) { // must be a section
+        if (!$data) return;
+        
+        $scopeLevel = array_pop($scope);
+        array_push($scopeLevel, array(
+          $data => array() // new array level using data as section name
+        ));
+        array_push($scope, $scopeLevel);
+      }
+    }, function() use (&$scope) {
+      array_pop($scope);
+    });
+
+    $flattened = array();
+    foreach ($scope[0] as $key => $val) {
+      $flattened[$key] = $val;
+    }
+    return $flattened;
+  }
 
 	/*
 	 * Run a callback on the cache, treating the cache as multilevel even if a
